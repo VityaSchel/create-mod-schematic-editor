@@ -7,6 +7,7 @@
   import type nbtType from 'prismarine-nbt'
   import { onMount } from 'svelte'
   const nbt = window.require('prismarine-nbt') as typeof import('prismarine-nbt')
+  const zlib = window.require('pako') as typeof import('pako')
 
   onMount(() => {
     window.Buffer = Buffer
@@ -62,7 +63,7 @@
     }
   }
 
-  const saveFile = () => {
+  const saveFile = async () => {
     if (!parsedData) return
     ;(parsedData.parsed.value as NbtSchema).palette.value.value.forEach((block) => {
       const id = block.Name.value
@@ -70,8 +71,9 @@
         block.Name.value = replaceMap[id]
       }
     })
-    const buffer = nbt.writeUncompressed(parsedData.parsed)
-    const blob = new Blob([buffer], { type: 'application/octet-stream' })
+    const uncompressedBuffer = nbt.writeUncompressed(parsedData.parsed)
+    const compressedBuffer = zlib.gzip(uncompressedBuffer)
+    const blob = new Blob([compressedBuffer], { type: 'application/octet-stream' })
     saveAs(blob, path.basename(name, '.nbt') + '_modified.nbt')
   }
 </script>

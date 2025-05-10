@@ -10,5 +10,7 @@ export default defineConfig({
     }
   },
   plugins: [tailwindcss(), sveltekit()],
-  resolve: {},
+  resolve: {
+    alias: {}
+  }
 })
