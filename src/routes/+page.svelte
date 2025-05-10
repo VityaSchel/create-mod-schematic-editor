@@ -5,7 +5,12 @@
   import saveAs from 'file-saver'
   import path from 'path-browserify'
   import type nbtType from 'prismarine-nbt'
+  import { onMount } from 'svelte'
   const nbt = window.require('prismarine-nbt') as typeof import('prismarine-nbt')
+
+  onMount(() => {
+    window.Buffer = Buffer
+  })
 
   const nbtSchema = z.object({
     palette: z.object({
@@ -28,8 +33,11 @@
   let dragOver = $state(false)
   let uploaded = $state(false)
   let name = $state('')
-  let parsedData: { parsed: nbtType.NBT; type: nbtType.NBTFormat; metadata: nbtType.Metadata } | null =
-    $state(null)
+  let parsedData: {
+    parsed: nbtType.NBT
+    type: nbtType.NBTFormat
+    metadata: nbtType.Metadata
+  } | null = $state(null)
   let map: Map<string, number[]> = $state(new Map())
   let replaceMap: { [key: string]: string } = $state({})
 
